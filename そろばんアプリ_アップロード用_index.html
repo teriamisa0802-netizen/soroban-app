@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>そろばん塾アプリ｜生徒用</title>
+<style>
+:root{
+ --pink:#ffdce8;--pink2:#fff1f6;--blue:#dff2ff;--yellow:#fff3bd;
+ --green:#dcf7e7;--purple:#eadfff;--text:#514957;--white:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;color:var(--text);background:linear-gradient(135deg,#fff8fb,#f5fbff);min-height:100vh}
+button,input,select{font:inherit}
+button{border:0;border-radius:16px;padding:13px 18px;background:#fff;box-shadow:0 3px 10px #0001;color:var(--text);cursor:pointer}
+button:active{transform:scale(.98)}
+h1,h2,h3{margin:.3em 0 .7em}
+.screen{display:none;max-width:900px;margin:auto;padding:20px}
+.screen.active{display:block}
+.card{background:#fffffff2;border-radius:24px;padding:20px;margin:14px 0;box-shadow:0 6px 20px #0000000d}
+.title{text-align:center;padding:25px 10px}
+.title .logo{font-size:58px}
+.title h1{font-size:30px}
+input,select{width:100%;padding:13px 14px;border:2px solid #eee;border-radius:13px;background:#fff;margin:6px 0 12px}
+.btn{width:100%;margin:6px 0;font-weight:700}
+.pink{background:var(--pink)}.blue{background:var(--blue)}.yellow{background:var(--yellow)}
+.green{background:var(--green)}.purple{background:var(--purple)}
+.row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.small{font-size:13px;color:#777}.center{text-align:center}
+.back{background:transparent;box-shadow:none;padding-left:0}
+.badge{display:inline-block;padding:6px 11px;border-radius:20px;background:#eee;margin:3px;font-size:13px}
+.stat{display:flex;justify-content:space-between;gap:10px;text-align:center}
+.stat>div{flex:1;background:#fff;border-radius:18px;padding:12px}
+.big{font-size:34px;font-weight:800}
+.problem{font-size:28px;font-weight:800;text-align:center;line-height:1.7}
+.vertical{display:inline-block;text-align:right;font-family:monospace;font-size:34px;line-height:1.45;min-width:220px}
+.vertical .line{border-top:3px solid #555;margin-top:5px}
+.answer{font-size:40px;font-weight:900;text-align:center;margin:25px}
+.timer{font-size:42px;font-weight:900;text-align:center}
+.teacherItem,.hwItem,.historyItem{padding:13px;border-radius:16px;background:#fafafa;margin:8px 0}
+.done{background:#e8f9ee}
+.missed{background:#fff0f0}
+.garden{font-size:70px;text-align:center;margin:8px}
+.medal{font-size:32px}
+.hidden{display:none!important}
+.student-register-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.student-register-layout>div{background:#fafafa;border-radius:18px;padding:14px}
+.notice{padding:12px;border-radius:14px;background:#fff9df;margin:10px 0}
+table{width:100%;border-collapse:collapse}
+td,th{padding:9px;border-bottom:1px solid #eee;text-align:left}
+.memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.memory-card{min-height:90px;padding:8px;border-radius:16px;background:#fff;box-shadow:0 3px 10px #0001;border:2px solid #eee;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.memory-card.open{background:#fff7fb;border-color:#ffc5da}
+.memory-card.matched{background:#e8f9ee;border-color:#9cddb6;cursor:default}
+.memory-number{font-size:28px}
+.memory-soroban{display:flex;gap:4px;align-items:center;justify-content:center;max-width:100%;overflow:hidden}
+.memory-digit{position:relative;width:38px;height:72px;border-radius:8px;background:#f7f7f7;border:1px solid #ddd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.memory-bar{position:absolute;left:3px;right:3px;top:33px;height:3px;background:#777}
+.bead{width:24px;height:11px;border-radius:50%;background:#f3a6bd;z-index:1}
+.bead.top{position:absolute;top:8px}
+.bead.bottom{position:absolute;bottom:7px}
+.bead.bottom.b1{bottom:7px}.bead.bottom.b2{bottom:20px}.bead.bottom.b3{bottom:33px}.bead.bottom.b4{bottom:46px}
+.memory-card.small{font-size:12px}
+@media(max-width:600px){.memory-board{grid-template-columns:repeat(3,1fr)}.memory-card{min-height:82px}.memory-digit{width:31px;height:66px}.bead{width:20px;height:9px}}
+@media(max-width:600px){
+ .row3{grid-template-columns:1fr}
+ .vertical{font-size:29px}
+}
+.messageItem{padding:14px;border-radius:18px;background:#fafafa;margin:10px 0}.messageMine{background:#fff1f6}.messageTeacher{background:#eaf6ff}.messageBadge{display:inline-block;padding:4px 9px;border-radius:14px;font-size:12px;background:#eee}.unread{border:2px solid #b9ddff}.replyBox{margin-top:10px;padding:10px;border-radius:14px;background:#fff}
+.student-login-card{background:#fff;border-radius:28px;padding:18px 18px;margin:18px 0;box-shadow:0 6px 18px #00000012;display:flex;align-items:center;gap:14px}
+.student-avatar{width:88px;height:88px;border-radius:22px;background:#fff5f8;display:flex;align-items:center;justify-content:center;font-size:58px;flex:none}
+.student-login-info{flex:1;min-width:0}
+.student-login-name{font-size:28px;font-weight:800;margin-bottom:8px;color:#333}
+.student-exp{font-size:18px;color:#777}
+.student-login-actions{display:flex;align-items:center;gap:10px}
+.student-enter-btn{background:#fff;font-size:20px;color:#1689df;padding:15px 22px;border-radius:22px;white-space:nowrap;box-shadow:0 4px 14px #00000010}
+.student-delete-btn{background:#ffdede;color:#1689df;font-size:18px;padding:15px 17px;border-radius:22px;white-space:nowrap}
+.exam-box{background:#fff;border-radius:20px;padding:16px;margin:10px 0;border:2px solid #f0e8ee}.exam-title{font-size:22px;font-weight:800}.exam-question{font-size:30px;font-weight:800;text-align:center;margin:24px 0}.exam-actions{display:flex;gap:8px}.exam-actions button{flex:1}.exam-score{font-size:42px;font-weight:900;text-align:center}.exam-timer{font-size:44px;font-weight:900;text-align:center}.item-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.student-add-btn{width:100%;background:#fff;color:#1689df;font-size:22px;font-weight:700;padding:20px;border-radius:22px;margin:8px 0;box-shadow:0 5px 15px #00000010}
+.teacher-start{text-align:center;margin-top:80px}
+.teacher-start-btn{background:#eee;color:#777;font-size:20px;padding:16px 38px;border-radius:22px}
+@media(max-width:600px){.student-login-card{padding:14px;gap:9px}.student-avatar{width:72px;height:72px;font-size:48px}.student-login-name{font-size:23px}.student-login-actions{gap:6px}.student-enter-btn{font-size:17px;padding:13px 14px}.student-delete-btn{font-size:16px;padding:13px 12px}}
+
+/* v11 UI improvements */
+.practice-choice-grid,.teacher-dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.practice-choice{text-align:center}.practice-icon{font-size:42px}.practice-choice .btn{display:block;width:100%;margin:8px 0}.teacher-dashboard-card{border:0;background:#fff;border-radius:22px;padding:20px;box-shadow:0 5px 18px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:7px;cursor:pointer}.teacher-dashboard-card span{font-size:34px}.teacher-dashboard-card b{font-size:18px}.teacher-dashboard-card small{color:#777}.add-student-box{display:flex;gap:8px;margin-bottom:14px}.add-student-box input{flex:1}.student-manage-card,.teacher-hw-card{background:#fff;border:2px solid #f0f0f0;border-radius:20px;padding:16px;margin:12px 0}.student-manage-top{display:flex;align-items:center;gap:12px}.student-big-avatar{font-size:42px}.student-manage-top h3{margin:0}.student-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.student-summary>div{background:#fafafa;border-radius:14px;padding:10px;text-align:center}.student-summary b,.student-summary small{display:block}.student-actions{display:flex;gap:7px;flex-wrap:wrap}.student-actions button{border:0;border-radius:12px;padding:9px 12px;background:#f3f3f3;cursor:pointer}.student-actions .danger{background:#fff0f0;color:#c44}.teacher-hw-top{display:flex;justify-content:space-between;gap:10px}.teacher-hw-top span{font-size:12px;color:#777}.teacher-hw-card h3{margin:8px 0}.teacher-hw-pages{font-weight:700}.teacher-hw-status{margin-top:10px;font-weight:700}.teacher-hw-card.is-done{border-color:#bde7c8;background:#f5fff7}.chat-card{padding-bottom:10px}.chat-list{display:flex;flex-direction:column;gap:10px;max-height:55vh;overflow:auto;padding:8px 2px}.chat-row,.teacher-chat-row{display:flex}.chat-row.mine,.teacher-chat-row.mine{justify-content:flex-end}.chat-row.theirs,.teacher-chat-row.theirs{justify-content:flex-start}.chat-bubble{max-width:82%;padding:11px 14px;border-radius:18px;background:#f0f4f8;box-shadow:0 1px 2px rgba(0,0,0,.04)}.mine .chat-bubble{background:#fff0f6}.chat-name{font-size:12px;font-weight:700;margin-bottom:4px}.chat-bubble small{display:block;color:#888;font-size:10px;margin-top:5px}.chat-type,.chat-page{font-size:12px;color:#777;margin-bottom:4px}.chat-composer{border-top:1px solid #eee;margin-top:12px;padding-top:12px;display:flex;flex-direction:column;gap:8px}.chat-composer textarea{width:100%;padding:12px;border:2px solid #eee;border-radius:13px;resize:vertical}.chat-empty{text-align:center;color:#999;padding:35px}.teacher-chat-group{border:2px solid #eee;border-radius:20px;padding:12px;margin:12px 0}.teacher-chat-header{display:flex;justify-content:space-between;padding:4px 4px 10px}.replyBox{margin-top:8px}.replyBox textarea{width:100%;padding:9px;border:2px solid #eee;border-radius:10px}.replyBox button{margin-top:6px}.hw-check-btn{border:0;border-radius:14px;padding:10px 14px;background:#fff5bf;font-weight:700;cursor:pointer}.hw-check-btn.checked{background:#dff7e5}.homework-form{display:flex;flex-direction:column;gap:7px}
+@media(max-width:650px){.practice-choice-grid,.teacher-dashboard-grid{grid-template-columns:1fr}.student-summary{grid-template-columns:repeat(3,1fr)}.teacher-hw-top{flex-direction:column;gap:2px}}
+
+/* チャットUI：LINE風 */
+.chat-header-bar{display:flex;align-items:center;gap:8px;background:#fff;padding:10px 6px 12px;border-bottom:1px solid #eee;position:sticky;top:0;z-index:5}
+.chat-back{font-size:25px;padding:4px 10px;margin:0}
+.chat-header-person{display:flex;align-items:center;gap:10px}
+.chat-teacher-avatar{width:44px;height:44px;border-radius:50%;background:#fff0f6;display:flex;align-items:center;justify-content:center;font-size:27px}
+.chat-header-person b,.chat-header-person small{display:block}
+.chat-header-person small{font-size:11px;color:#888;margin-top:2px}
+.chat-card{padding:0 8px 8px;background:#f7f7f7;border-radius:0;box-shadow:none;min-height:calc(100vh - 90px);display:flex;flex-direction:column}
+.chat-list{flex:1;max-height:none;overflow:auto;padding:14px 4px 10px;display:flex;flex-direction:column;gap:8px}
+.chat-row{width:100%;display:flex}
+.chat-row.mine{justify-content:flex-end}
+.chat-row.theirs{justify-content:flex-start}
+.chat-bubble{max-width:78%;padding:9px 12px;border-radius:18px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08);position:relative}
+.chat-row.mine .chat-bubble{background:#dff7c8;border-top-right-radius:5px}
+.chat-row.theirs .chat-bubble{background:#fff;border-top-left-radius:5px}
+.chat-name{font-size:11px;color:#777;margin-bottom:3px}
+.chat-bubble small{display:block;text-align:right;color:#999;font-size:9px;margin-top:4px}
+.chat-type{display:inline-block;font-size:10px;color:#777;background:#f3f3f3;border-radius:8px;padding:2px 6px;margin-bottom:4px}
+.chat-page{font-size:11px;color:#777;margin-top:5px}
+.chat-composer{border-top:1px solid #e5e5e5;background:#fff;padding:8px 2px 2px;display:flex;flex-direction:column;gap:6px}
+.chat-options{display:flex;gap:6px}
+.chat-options select,.chat-options input{font-size:11px;padding:7px 9px;border:1px solid #ddd;border-radius:12px;background:#fff;min-width:0}
+.chat-options select{flex:1}.chat-options input{width:110px}
+.chat-input-row{display:flex;align-items:flex-end;gap:6px}
+.chat-input-row textarea{flex:1;min-height:40px;max-height:100px;padding:10px 12px;border:1px solid #ddd;border-radius:20px;resize:none;font-size:14px;box-sizing:border-box}
+.chat-send-btn{width:42px;height:42px;border:0;border-radius:50%;background:#ff78a8;color:#fff;font-size:20px;font-weight:700;cursor:pointer;flex:none}
+.chat-empty{background:rgba(255,255,255,.7);border-radius:16px;text-align:center;color:#999;padding:35px 15px;margin:auto 0}
+@media(max-width:600px){.chat-card{margin:0 -8px}.chat-options input{width:92px}.chat-bubble{max-width:82%}}
+</style>
+<meta name="theme-color" content="#1e9bea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="そろばんアプリ">
+</head>
+<body>
+<section class="screen active" id="auth-screen">
+<div class="title">
+<div class="logo">🧮</div>
+<h1>そろばん育成アプリ</h1>
+<p>だれがつかう？</p>
+</div>
+<div id="loginStudentList"></div>
+<div class="card" id="studentRegisterCard">
+<h2>🌱 はじめて使う人</h2>
+<p class="small">自分の本名と、アプリで表示するニックネームを登録してください。</p>
+<label>本名</label>
+<input id="studentRealName" placeholder="本名を入力してください" autocomplete="name"/>
+<label>ニックネーム</label>
+<input id="studentNickname" placeholder="アプリで表示する名前" maxlength="20"/>
+<button class="btn pink" onclick="registerStudentAccount()">登録してはじめる</button>
+<div class="notice center">本名は先生の管理画面で確認できます。生徒画面ではニックネームを表示します。</div>
+</div>
+<div class="notice center" id="inviteNotice">登録済みの生徒は、下の名前を選んで入ってください。</div>
+
+</section>
+
+<section class="screen" id="menu-screen">
+<div class="title">
+<div class="garden" id="menuGarden">🌱</div>
+<h2 id="welcome"></h2>
+</div>
+<div class="stat" id="menuStats"></div>
+<div class="row">
+<button class="btn pink" onclick="show('modeselect-screen')">🔊 読み上げ算</button>
+<button class="btn yellow" onclick="showHomework()">📚 宿題</button>
+<button class="btn green" onclick="showHistory()">📖 学習記録</button>
+<button class="btn blue" onclick="showExamSetup()">📝 検定練習</button>
+<button class="btn pink" onclick="showMessages()">💬 先生と話す</button>
+</div>
+<div class="card center">
+<button onclick="logout()">ログアウト</button>
+</div>
+</section>
+<section class="screen" id="modeselect-screen">
+<button class="back" onclick="show('menu-screen')">← メニュー</button>
+<div class="card">
+<h2>🔊 読み上げ練習</h2>
+<p class="small">そろばんと暗算、それぞれの練習を選べます。</p>
+</div>
+<div class="practice-choice-grid">
+<div class="card practice-choice">
+<div class="practice-icon">🧮</div><h3>読み上げ算</h3>
+<p>そろばんで計算します。</p>
+<button class="btn pink" onclick="startReadNormal('read')">▶️ 練習する</button>
+<button class="btn blue" onclick="showMockSetup('read')">📝 検定模擬問題</button>
+</div>
+<div class="card practice-choice">
+<div class="practice-icon">🧠</div><h3>読み上げ算暗算</h3>
+<p>聞いた数字を暗算します。</p>
+<button class="btn pink" onclick="startReadNormal('anzan')">▶️ 練習する</button>
+<button class="btn blue" onclick="showMockSetup('anzan')">📝 検定模擬問題</button>
+</div>
+</div>
+</section>
+<section class="screen" id="setup-screen">
+<button class="back" onclick="show('modeselect-screen')">← 戻る</button>
+<div class="card">
+<h2 id="readSetupTitle">練習設定</h2>
+<label>桁数</label>
+<select id="readDigits"><option value="1">1桁</option><option value="2">2桁</option><option value="3">3桁</option></select>
+<label>口数</label>
+<select id="readCount"><option value="5">5口</option><option value="7">7口</option><option value="10">10口</option></select>
+<button class="btn pink" onclick="startReadPlay()">開始</button>
+</div>
+</section>
+<section class="screen" id="read-play-screen">
+<button class="back" onclick="stopRead()">← 終了</button>
+<div class="card center">
+<h2 id="readPlayTitle">🔊 読み上げ算</h2>
+<div class="badge" id="readNo"></div>
+<div class="problem">先生が読み上げます</div>
+<div class="notice">数字は画面に表示されません。耳で聞いてそろばんで計算してください。</div>
+<button class="btn pink" onclick="speakCurrentRead()">🔊 もう一度聞く</button>
+<button class="btn blue" onclick="showReadAnswer()">答えを見る</button>
+</div>
+</section>
+<section class="screen" id="read-answer-screen">
+<div class="card center">
+<h2>答え</h2>
+<div class="answer" id="readAnswer"></div>
+<button class="btn pink" onclick="nextRead()">次の問題</button>
+<button class="btn purple" onclick="unlockGame();showGameLevels()">🎮 ごほうびゲーム</button>
+</div>
+</section>
+<section class="screen" id="mock-setup-screen">
+<button class="back" onclick="show('modeselect-screen')">← 戻る</button>
+<div class="card">
+<h2>📝 模擬問題</h2>
+<p>10問・1問40秒で練習します。</p>
+<label>級・段位</label>
+<select id="mockLevel"></select>
+<div class="row">
+<button class="btn pink" onclick="startMock('read')">読み上げ算</button>
+<button class="btn purple" onclick="startMock('anzan')">読み上げ暗算</button>
+</div>
+</div>
+</section>
+<section class="screen" id="mock-play-screen">
+<div class="card center">
+<h2 id="mockTitle"></h2>
+<div class="badge" id="mockNo"></div>
+<div class="problem">🔊 読み上げ中</div>
+<p>数字は表示されません</p>
+<div class="timer" id="mockTimer">40</div>
+<button class="btn pink" onclick="speakMockCurrent()">🔊 もう一度聞く</button>
+<button class="btn blue" onclick="showMockAnswerInput()">答えを入力する</button>
+</div>
+</section>
+<section class="screen" id="mock-input-screen">
+<div class="card center">
+<h2>答えを入力</h2>
+<input id="mockAnswerInput" inputmode="numeric" placeholder="答え" type="number"/>
+<button class="btn pink" onclick="submitMock()">答えを確定</button>
+</div>
+</section>
+<section class="screen" id="mock-result-screen">
+<div class="card center">
+<h2>模擬問題 結果</h2>
+<div class="answer" id="mockScore"></div>
+<div id="mockDetail"></div>
+<button class="btn purple" onclick="unlockGame();showGameLevels()">🎮 ごほうびゲーム</button><button class="btn pink" onclick="show('menu-screen')">メニューへ</button>
+</div>
+</section>
+<section class="screen" id="exam-setup-screen">
+<button class="back" onclick="show('menu-screen')">← 戻る</button>
+<div class="card">
+<h2>📝 検定練習</h2>
+<p class="small">そろばん・暗算の検定級を選んで、項目ごとに時間を決めて練習できます。</p>
+<label>種目</label>
+<select id="examCalc" onchange="renderExamLevels();renderExamItems()"><option value="そろばん">そろばん</option><option value="暗算">暗算</option></select>
+<label>検定級</label>
+<select id="examLevel"></select>
+<label>練習する項目</label>
+<div class="item-tabs">
+<button id="examItem1" onclick="startExam('見取算')">見取算</button>
+<button id="examItem2" onclick="startExam('掛け算')">掛け算</button>
+<button id="examItem3" onclick="startExam('割り算')">割り算</button>
+</div>
+<div class="notice">例：見取算だけ10分、掛け算だけ10分、というように1項目ずつ練習できます。</div>
+</div>
+</section>
+<section class="screen" id="exam-play-screen">
+<div class="card">
+<div class="exam-title center" id="examTitle"></div>
+<div class="exam-timer" id="examTimer">10:00</div>
+<div class="badge" id="examCount"></div>
+<div class="exam-question" id="examQuestion"></div>
+<input id="examInput" inputmode="numeric" placeholder="答えを入力" type="number"/>
+<div class="exam-actions"><button class="pink" onclick="submitExamAnswer()">答えを確定</button><button class="blue" onclick="finishExam()">終了</button></div>
+</div>
+</section>
+<section class="screen" id="exam-result-screen">
+<div class="card center">
+<h2>検定練習 結果</h2>
+<div id="examResultTitle"></div>
+<div class="exam-score" id="examScore"></div>
+<div id="examResultDetail"></div>
+<button class="btn purple" onclick="unlockGame();showGameLevels()">🎮 ごほうびゲーム</button>
+<button class="btn pink" onclick="showExamSetup()">別の項目を練習</button>
+<button class="btn blue" onclick="show('menu-screen')">メニューへ</button>
+</div>
+</section>
+<section class="screen" id="game-menu-screen">
+<button class="back" onclick="show('menu-screen')">← 戻る</button>
+<div class="card center">
+<h2>🎮 ごほうびゲーム</h2>
+<p class="small">問題を解いたら遊べる神経衰弱です。</p>
+<div class="row" id="memoryLevelList"></div>
+</div>
+</section>
+<section class="screen" id="game-level-screen">
+<button class="back" onclick="show('game-menu-screen')">← レベル選択</button>
+<div class="card center">
+<h2 id="gameHeading">神経衰弱</h2>
+<p class="small" id="memoryLevelDescription"></p>
+<div class="memory-board" id="memoryBoard"></div>
+</div>
+</section>
+<section class="screen" id="game-play-screen">
+<div class="card center">
+<h2>神経衰弱</h2>
+<div class="badge" id="memoryInfo"></div>
+<div class="memory-board" id="memoryBoardPlay"></div>
+</div>
+</section>
+<section class="screen" id="game-result-screen">
+<div class="card center">
+<h2>🎉 クリア！</h2>
+<div class="answer" id="gameResult"></div>
+<button class="btn pink" onclick="showGameLevels()">もう一度遊ぶ</button>
+<button class="btn blue" onclick="show('menu-screen')">メニューへ</button>
+</div>
+</section>
+<section class="screen" id="homework-screen">
+<button class="back" onclick="show('menu-screen')">← 戻る</button>
+<div class="card">
+<h2>📚 宿題・学習記録</h2>
+<div id="todayDate"></div>
+<p class="small">今日やったことを自分で記録できます。先生からの宿題もここで確認できます。</p>
+</div>
+<div class="card">
+<h3>✏️ 今日取り組んだこと</h3>
+<p class="small">家でやったことを短く書いてね。</p>
+<input id="studyDate" type="hidden"/>
+<input id="studyText" placeholder="例：6級わり算10問" maxlength="50"/>
+<button class="btn pink" onclick="addStudyLog()">記録する</button>
+</div>
+<div class="card">
+<h3>📋 学習記録一覧</h3>
+<div id="homeworkList"></div>
+</div>
+<div class="card">
+<h3>🌱 そろばん育成</h3>
+<div class="garden" id="gardenHome"></div>
+<div class="center" id="gardenText"></div>
+<div class="center" id="medals"></div>
+</div>
+</section>
+<section class="screen" id="history-screen">
+<button class="back" onclick="show('menu-screen')">← 戻る</button>
+<div class="card">
+<h2>📖 学習記録</h2>
+<div id="historyList"></div>
+</div>
+</section>
+
+
+
+
+<section class="screen" id="messages-screen">
+<div class="chat-header-bar"><button class="back chat-back" onclick="show('menu-screen')">←</button><div class="chat-header-person"><span class="chat-teacher-avatar">👩‍🏫</span><div><b>先生</b><small>そろばんの先生とお話しできます</small></div></div></div>
+<div class="card chat-card">
+<div class="chat-list" id="messageList"></div>
+<div class="chat-composer">
+<div class="chat-options"><select id="messageType"><option>わからない問題</option><option>やり方を教えてほしい</option><option>間違っているところを見てほしい</option><option>その他</option></select><input id="messagePage" placeholder="ページ（任意）"/></div>
+<div class="chat-input-row"><textarea id="messageText" placeholder="メッセージを入力" rows="1"></textarea><button class="chat-send-btn" onclick="sendStudentMessage()">➤</button></div>
+</div>
+</div>
+</section>
+<script>
+const $=id=>document.getElementById(id);
+const DAY=['日','月','火','水','木','金','土'];
+
+let currentStudent=null;
+let readQuestions=[],readIndex=0,readMode='read';
+let mockQuestions=[],mockIndex=0,mockCorrect=0,mockTimer=null,mockSeconds=40,mockMode='';
+let gameMode='',gameCalc='',gameType='',gameLevel=1,gameQ=null,gameTimer=null,gameSeconds=0;
+let examCalc='そろばん',examLevel='6級',examItem='見取算',examQuestion=null,examTimer=null,examSeconds=600,examCorrect=0,examTotal=0;
+
+function getStudents(){return JSON.parse(localStorage.getItem('sorobanStudents')||'[]')}
+function saveStudents(a){localStorage.setItem('sorobanStudents',JSON.stringify(a))}
+function getHW(){return JSON.parse(localStorage.getItem('sorobanHomework')||'[]')}
+function saveHW(a){localStorage.setItem('sorobanHomework',JSON.stringify(a))}
+function getHistory(){return JSON.parse(localStorage.getItem('sorobanHistory')||'[]')}
+function saveHistory(a){localStorage.setItem('sorobanHistory',JSON.stringify(a))}
+
+function show(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ $(id).classList.add('active');
+ window.scrollTo(0,0);
+}
+
+function showTeacherLogin(){}
+function teacherLogin(){}
+function logout(){currentStudent=null;localStorage.removeItem('sorobanStudentId');renderStartStudents();show('auth-screen')}
+
+function studentLoginById(id){
+ const s=getStudents().find(x=>x.id===id);
+ if(!s)return;
+ currentStudent=s;
+ $('welcome').textContent=(s.nickname||s.name)+'さん、今日もがんばろう！';
+ updateMenuStats();
+ show('menu-screen');
+}
+
+function studentLogin(){
+ const name=$('studentName').value.trim();
+ if(!name){alert('ニックネームを入力してください。');return}
+ let students=getStudents();
+ let s=students.find(x=>(x.nickname||x.name)===name);
+ if(!s){
+  if(students.length>=5){alert('このアプリには5人まで登録できます。');return}
+  s={id:Date.now().toString(),name,created:new Date().toISOString()};
+  students.push(s);saveStudents(students);
+ }
+ studentLoginById(s.id);
+}
+
+function renderStartStudents(){
+ const a=getStudents();
+ const box=$('loginStudentList');
+ if(!box)return;
+ box.innerHTML=a.map((s,i)=>{
+  const avatars=['🐰','🐱','🐶','🐼','🐨'];
+  return '<div class="student-login-card">'+
+   '<div class="student-avatar">'+avatars[i%avatars.length]+'</div>'+
+   '<div class="student-login-info"><div class="student-login-name">'+escapeHtml(s.nickname||s.name)+'</div><div class="student-exp">⭐ EXP '+(s.exp||0)+'</div></div>'+
+   '<div class="student-login-actions"><button class="student-enter-btn" onclick="studentLoginById(\''+s.id+'\')">はいってみる</button><button class="student-delete-btn" onclick="deleteStartStudent(\''+s.id+'\')">削除</button></div>'+
+   '</div>';
+ }).join('');
+}
+
+function registerFromStart(){
+ const name=prompt('アプリで表示するニックネームを入力してください。');
+ if(name===null)return;
+ const clean=name.trim();
+ if(!clean)return alert('名前を入力してください。');
+ let a=getStudents();
+ if(a.length>=5)return alert('このアプリには5人まで登録できます。');
+ if(a.some(s=>(s.nickname||s.name)===clean))return alert('そのニックネームはすでに登録されています。');
+ a.push({id:Date.now().toString(),nickname:clean,name:clean,realName:'',created:new Date().toISOString(),exp:0});
+ saveStudents(a);
+ renderStartStudents();
+}
+
+function deleteStartStudent(id){
+ const s=getStudents().find(x=>x.id===id);
+ if(!s)return;
+ if(!confirm(s.name+'さんを削除しますか？'))return;
+ saveStudents(getStudents().filter(x=>x.id!==id));
+ saveHW(getHW().filter(x=>x.studentId!==id));
+ saveStudyLogs(getStudyLogs().filter(x=>x.studentId!==id));
+ saveMessages(getMessages().filter(x=>x.studentId!==id));
+ saveHistory(getHistory().filter(x=>x.studentId!==id));
+ renderStartStudents();
+}
+
+
+function updateMenuStats(){
+ const h=getHistory().filter(x=>x.studentId===currentStudent.id);
+ const hw=getHW().filter(x=>x.studentId===currentStudent.id);
+ const done=hw.filter(x=>x.done).length;
+ $('menuStats').innerHTML='<div><div class="big">'+h.length+'</div><small>練習回数</small></div>'+
+ '<div><div class="big">'+done+'</div><small>宿題達成</small></div>'+
+ '<div><div class="big">'+getStreak()+'</div><small>連続日数</small></div>';
+ $('menuGarden').textContent=gardenEmoji();
+}
+
+function gardenEmoji(){
+ const n=new Set(getStudyLogs().filter(x=>x.studentId===currentStudent.id).map(x=>x.date)).size;
+ if(n>=365)return'🌳';
+ if(n>=180)return'🌸';
+ if(n>=60)return'🌿';
+ if(n>=30)return'🌱';
+ if(n>=10)return'🌱';
+ if(n>=3)return'🌰';
+ return'🌰';
+}
+function getStreak(){
+ if(!currentStudent)return 0;
+ const dates=[...new Set(getStudyLogs().filter(x=>x.studentId===currentStudent.id).map(x=>x.date))].sort().reverse();
+ if(!dates.length)return 0;let streak=1;
+ for(let i=0;i<dates.length-1;i++){const a=new Date(dates[i]+'T00:00:00'),b=new Date(dates[i+1]+'T00:00:00');if((a-b)/86400000===1)streak++;else break;}return streak;
+}
+
+/* 読み上げ */
+function startReadNormal(mode='read'){
+ readMode=mode;
+ $('readSetupTitle').textContent=mode==='anzan'?'🧠 読み上げ算暗算 練習設定':'🧮 読み上げ算 練習設定';
+ $('readPlayTitle').textContent=mode==='anzan'?'🧠 読み上げ算暗算':'🧮 読み上げ算';
+ show('setup-screen');
+}
+function startReadPlay(){
+ const digits=+$('readDigits').value,count=+$('readCount').value;
+ readQuestions=Array.from({length:10},()=>makeReadQuestion(digits,count));
+ readIndex=0;showReadQuestion();
+}
+function makeReadQuestion(digits,count){
+ let nums=[],answer=0,operations=[];
+ for(let i=0;i<count;i++){
+  let n=Math.floor(Math.random()*(9*Math.pow(10,digits-1)))+Math.pow(10,digits-1);
+  let op='add';
+  if(i>0 && Math.random()<0.2 && answer-n>=0){
+   op='sub';
+   answer-=n;
+  }else{
+   answer+=n;
+  }
+  nums.push(n);operations.push(op);
+ }
+ return {nums,operations,answer};
+}
+function speak(text){
+ if('speechSynthesis' in window){
+  speechSynthesis.cancel();
+  let u=new SpeechSynthesisUtterance(text);
+  u.lang='ja-JP';u.rate=.9;
+  speechSynthesis.speak(u);
+ }
+}
+function readPhrase(q,isAnzan=false){
+ let parts=[];
+ q.nums.forEach((n,i)=>{
+  if(i===0){
+   parts.push(n+'円なり');
+  }else if(q.operations[i]==='sub'){
+   parts.push('引いては、'+n+'円なり');
+  }else{
+   parts.push(n+'円なり');
+  }
+ });
+ return (isAnzan?'暗算、':'')+'御破算で願いましては、'+parts.join('、')+'、では。';
+}
+function showReadQuestion(){
+ show('read-play-screen');
+ $('readNo').textContent='第'+(readIndex+1)+'問';
+ speakCurrentRead();
+}
+function speakCurrentRead(){speak(readPhrase(readQuestions[readIndex],readMode==='anzan'))}
+function showReadAnswer(){
+ $('readAnswer').textContent=readQuestions[readIndex].answer;
+ show('read-answer-screen');
+}
+function nextRead(){
+ if(readIndex<readQuestions.length-1){readIndex++;showReadQuestion()}
+ else{addHistory((readMode==='anzan'?'読み上げ算暗算':'読み上げ算')+' 練習',10);unlockGame();show('menu-screen')}
+}
+function stopRead(){if('speechSynthesis'in window)speechSynthesis.cancel();show('modeselect-screen')}
+
+/* 模擬 */
+const MOCK_LEVELS={read:[
+ {id:'7-10',name:'7～10級',min:70,scale:1,digits:[1,2],count:5},
+ {id:'6',name:'6級',min:70,scale:1,digits:[2,3],count:10},{id:'5',name:'5級',min:70,scale:1,digits:[3,4],count:10},{id:'4',name:'4級',min:70,scale:1,digits:[3,5],count:10},{id:'3',name:'3級',min:70,scale:1,digits:[3,6],count:10},{id:'2',name:'2級',min:70,scale:1,digits:[5,8],count:10},{id:'1',name:'1級',min:80,scale:1,digits:[5,10],count:10},
+ {id:'準初段',name:'準初段',min:70,scale:1.5,digits:[7,10],count:10},{id:'初段',name:'初段',min:80,scale:1.5,digits:[7,10],count:10},{id:'準二段',name:'準二段',min:90,scale:1.5,digits:[7,11],count:10},{id:'二段',name:'二段',min:100,scale:1.5,digits:[7,11],count:10},{id:'準三段',name:'準三段',min:110,scale:1.5,digits:[7,12],count:10},{id:'三段',name:'三段',min:120,scale:1.5,digits:[7,12],count:10},{id:'四段',name:'四段',min:130,scale:1.5,digits:[7,12],count:10},{id:'五段',name:'五段',min:140,scale:1.5,digits:[7,12],count:10},{id:'六段',name:'六段',min:60,scale:1.5,digits:[7,13],count:10},{id:'七段',name:'七段',min:80,scale:1.5,digits:[7,14],count:10},{id:'八段',name:'八段',min:100,scale:1.5,digits:[7,15],count:10},{id:'九段',name:'九段',min:120,scale:1.5,digits:[7,16],count:10},{id:'十段',name:'十段',min:140,scale:1.5,digits:[7,16],count:10}],
+ anzan:[
+ {id:'7-10',name:'7～10級',min:70,scale:1,digits:[1,1],count:50},
+ {id:'6',name:'6級',min:70,scale:1,digits:[1,2],count:5},{id:'5',name:'5級',min:70,scale:1,digits:[1,2],count:5},{id:'4',name:'4級',min:70,scale:1,digits:[2,2],count:5},{id:'3',name:'3級',min:70,scale:1,digits:[2,3],count:5},{id:'2',name:'2級',min:70,scale:1,digits:[3,3],count:7},{id:'1',name:'1級',min:80,scale:1,digits:[3,3],count:10},
+ {id:'準初段',name:'準初段',min:70,scale:1.5,digits:[3,4],count:10},{id:'初段',name:'初段',min:80,scale:1.5,digits:[3,4],count:10},{id:'準二段',name:'準二段',min:90,scale:1.5,digits:[3,5],count:10},{id:'二段',name:'二段',min:100,scale:1.5,digits:[3,5],count:10},{id:'準三段',name:'準三段',min:110,scale:1.5,digits:[4,6],count:10},{id:'三段',name:'三段',min:120,scale:1.5,digits:[4,6],count:10},{id:'四段',name:'四段',min:130,scale:1.5,digits:[4,7],count:10},{id:'五段',name:'五段',min:140,scale:1.5,digits:[4,7],count:10},{id:'六段',name:'六段',min:60,scale:1.5,digits:[3,6],count:10},{id:'七段',name:'七段',min:80,scale:1.5,digits:[4,7],count:10},{id:'八段',name:'八段',min:100,scale:1.5,digits:[5,8],count:10},{id:'九段',name:'九段',min:120,scale:1.5,digits:[5,9],count:10},{id:'十段',name:'十段',min:140,scale:1.5,digits:[5,10],count:10}]};
+function showMockSetup(mode){mockMode=mode||'read';$('mockLevel').innerHTML=MOCK_LEVELS[mockMode].map(x=>'<option value="'+x.id+'">'+x.name+'（最低点 '+x.min+'点）</option>').join('');show('mock-setup-screen')}
+function mockRange(level,mode){return MOCK_LEVELS[mode].find(x=>x.id===level)||MOCK_LEVELS[mode][0]}
+function makeAdvanced(dmin,dmax,count){let nums=[],answer=0,operations=[];for(let i=0;i<count;i++){let d=dmin+Math.floor(Math.random()*(dmax-dmin+1));let n=Math.floor(Math.random()*(9*Math.pow(10,d-1)))+Math.pow(10,d-1);let op='add';if(i>0&&Math.random()<.2&&answer-n>=0){op='sub';answer-=n}else{answer+=n}nums.push(n);operations.push(op)}return{nums,operations,answer}}
+function startMock(mode){mockMode=mode;let level=$('mockLevel').value,r=mockRange(level,mode);let total=r.id==='7-10'&&mode==='anzan'?10:10;mockQuestions=Array.from({length:total},()=>makeAdvanced(r.digits[0],r.digits[1],r.count));mockIndex=0;mockCorrect=0;showMockQuestion()}
+function showMockQuestion(){show('mock-play-screen');const lv=mockRange($('mockLevel').value,mockMode);$('mockTitle').textContent=(mockMode==='read'?'読み上げ算':'読み上げ暗算')+' '+lv.name+' 模擬問題';$('mockNo').textContent='第'+(mockIndex+1)+'問 / 10問';$('mockAnswerInput').value='';mockSeconds=40;$('mockTimer').textContent=mockSeconds;clearInterval(mockTimer);mockTimer=setInterval(()=>{mockSeconds--;$('mockTimer').textContent=mockSeconds;if(mockSeconds<=0){clearInterval(mockTimer);showMockAnswerInput()}},1000);speakMockCurrent()}
+function speakMockCurrent(){speak(readPhrase(mockQuestions[mockIndex]))}
+function showMockAnswerInput(){clearInterval(mockTimer);show('mock-input-screen');$('mockAnswerInput').focus()}
+function submitMock(){const a=Number($('mockAnswerInput').value),q=mockQuestions[mockIndex];if(a===q.answer)mockCorrect++;if(mockIndex<9){mockIndex++;showMockQuestion()}else finishMock()}
+function finishMock(){const lv=mockRange($('mockLevel').value,mockMode),raw=mockCorrect*10,score=lv.scale===1.5?Math.round(raw*1.5):raw;$('mockScore').textContent=score+'点';$('mockDetail').innerHTML='<p>'+mockCorrect+' / 10問 正解</p><p>受験：'+lv.name+'</p><p>合格最低点：'+lv.min+'点</p><h3>'+(score>=lv.min?'🎉 合格ライン達成！':'もう少し！次もがんばろう！')+'</h3>';addHistory((mockMode==='read'?'読み上げ算':'読み上げ暗算')+' 検定模擬 '+lv.name,score);unlockGame();show('mock-result-screen')}
+
+/* 検定練習 */
+const EXAM_LEVELS_SOROBAN=['9・10級','8級','7級','6級','5級','4級','準3級','3級','準2級','2級','準1級','1級','準初段','初段','準二段','二段','準三段','三段','四段','五段','六段','七段','八段','九段','十段'];
+const EXAM_LEVELS_ANZAN=['7～10級','6級','5級','4級','準3級','3級','準2級','2級','準1級','1級','準初段','初段','準二段','二段','準三段','三段','四段','五段','六段','七段','八段','九段','十段'];
+function showExamSetup(){
+ clearInterval(examTimer);examCalc=$('examCalc').value||examCalc;renderExamLevels();renderExamItems();show('exam-setup-screen');
+}
+function renderExamLevels(){
+ examCalc=$('examCalc').value||'そろばん';
+ const levels=examCalc==='そろばん'?EXAM_LEVELS_SOROBAN:EXAM_LEVELS_ANZAN;
+ $('examLevel').innerHTML=levels.map(x=>'<option value="'+x+'">'+x+'</option>').join('');
+ $('examLevel').value=examLevel&&levels.includes(examLevel)?examLevel:(examCalc==='そろばん'?'6級':'6級');
+}
+function renderExamItems(){
+ const mental=$('examCalc').value==='暗算';
+ $('examItem1').textContent=mental?'見取暗算':'見取算';
+ $('examItem2').textContent=mental?'掛け暗算':'掛け算';
+ $('examItem3').textContent=mental?'割り暗算':'割り算';
+}
+function examPracticeMinutes(calc,level,item){
+ if(calc==='暗算'){
+  if(['準初段','初段','準二段','二段','準三段','三段','四段','五段','六段','七段','八段','九段','十段'].includes(level)){
+   return item==='見取暗算'?4:3;
+  }
+  return 12;
+ }
+ if(['準初段','初段','準二段','二段','準三段','三段','四段','五段','六段','七段','八段','九段','十段'].includes(level)) return 10;
+ if(['9・10級','8級','7級'].includes(level)) return 20;
+ return 30;
+}
+function examItemName(calc,item){
+ if(calc==='暗算') return item==='見取算'?'見取暗算':item==='掛け算'?'掛け暗算':'割り暗算';
+ return item;
+}
+function examLevelNum(){
+ const x=$('examLevel').value;const map={'9・10級':9,'7～10級':7,'10級':10,'9級':9,'8級':8,'7級':7,'6級':6,'5級':5,'4級':4,'3級':3,'2級':2,'1級':1};
+ return map[x]||0;
+}
+function makeExamQuestion(item,level,calc){
+ const actualItem=examItemName(calc,item);
+ const n=examLevelNum();
+ if(level==='7～10級') level='7級';
+ if(level==='9・10級') level='9級';
+ if(calc==='暗算' && n){
+  if(item==='見取算'){
+   const cfg=({'7級':[1,3,50],'8級':[1,3,50],'9級':[1,3,50],'10級':[1,3,50],'6級':[1,2,5],'5級':[1,2,5],'4級':[2,2,5],'3級':[3,3,5],'2級':[3,3,7],'1級':[3,3,10]}[level]||[1,2,5]);
+   let nums=[],sum=0;for(let i=0;i<cfg[2];i++){let d=cfg[0]+Math.floor(Math.random()*(cfg[1]-cfg[0]+1)),v=randDigits(d);if(i>0&&Math.random()<.25&&sum-v>=0)v=-v;nums.push(v);sum+=v;}return{item,display:nums.map(v=>v<0?'−'+Math.abs(v):v).join(' ＋ '),answer:sum};
+  }
+  if(item==='掛け算'){
+   const cfg=({'6級':[1,2,3],'5級':[1,2,3],'4級':[1,2,3],'3級':[2,2,4],'2級':[2,2,4],'1級':[2,3,5]}[level]||[1,2,3]);
+   const a=randDigits(cfg[0]),b=randDigits(cfg[1]);return{item,display:a+' × '+b,answer:a*b};
+  }
+  const cfg=({'6級':[2,1,3],'5級':[2,1,3],'4級':[2,1,3],'3級':[3,1,4],'2級':[3,1,4],'1級':[3,1,5]}[level]||[2,1,3]);
+  const b=randDigits(cfg[1]),q=randDigits(Math.max(1,cfg[0]-cfg[1]));return{item,display:(b*q)+' ÷ '+b,answer:q};
+ }
+ if(n){
+  if(item==='見取算'){
+   const cfg=calc==='そろばん'?({10:[1,1,5],9:[1,2,5],8:[2,2,5],7:[2,2,5],6:[2,3,5],5:[2,3,5],4:[3,4,5],3:[3,5,5],2:[4,6,5],1:[5,7,5]}[level]||[2,3,5]):({10:[1,1,5],9:[1,1,5],8:[1,2,5],7:[1,2,5],6:[1,2,5],5:[2,2,5],4:[2,3,5],3:[2,3,5],2:[3,4,5],1:[3,4,5]}[level]||[1,2,5]);
+   let nums=[],sum=0;for(let i=0;i<cfg[2];i++){let d=cfg[Math.floor(Math.random()*2)],v=randDigits(d);if(i>0&&Math.random()<.25&&sum-v>=0)v=-v;nums.push(v);sum+=v;}return{item,display:nums.map(v=>v<0?'−'+Math.abs(v):v).join(' ＋ '),answer:sum};
+  }
+  if(item==='掛け算'){
+   const cfg=calc==='そろばん'?({10:[1,1],9:[1,1],8:[1,1],7:[1,1],6:[2,1],5:[2,1],4:[2,2],3:[2,2],2:[3,2],1:[3,2]}[level]||[2,1]):({10:[1,1],9:[1,1],8:[1,1],7:[1,1],6:[1,1],5:[2,1],4:[2,1],3:[2,2],2:[2,2],1:[3,2]}[level]||[1,1]);
+   const a=randDigits(cfg[0]),b=randDigits(cfg[1]);return{item,display:a+' × '+b,answer:a*b};
+  }
+  const cfg=calc==='そろばん'?({10:[2,1],9:[2,1],8:[2,1],7:[2,1],6:[3,1],5:[3,1],4:[3,2],3:[4,2],2:[5,2],1:[5,2]}[level]||[3,1]):({10:[2,1],9:[2,1],8:[2,1],7:[2,1],6:[3,1],5:[3,1],4:[3,2],3:[4,2],2:[4,2],1:[5,2]}[level]||[3,1]);
+  const b=randDigits(cfg[1]),q=randDigits(Math.max(1,cfg[0]-cfg[1]));return{item,display:(b*q)+' ÷ '+b,answer:q};
+ }
+ // 段位は級の上位レベルとして大きめの問題にする
+ let d=item==='見取算'?7:(item==='掛け算'?4:5);let b=randDigits(Math.max(1,d-2)),a=item==='掛け算'?randDigits(d):(item==='割り算'?b*randDigits(Math.max(1,d-3)):randDigits(d));
+ if(item==='見取算'){let nums=Array.from({length:10},()=>randDigits(d));return{item,display:nums.join(' ＋ '),answer:nums.reduce((a,b)=>a+b,0)}}
+ if(item==='掛け算')return{item,display:a+' × '+b,answer:a*b};
+ return{item,display:a+' ÷ '+b,answer:a/b};
+}
+function startExam(item){
+ examCalc=$('examCalc').value;examLevel=$('examLevel').value;examItem=item;examSeconds=examPracticeMinutes(examCalc,examLevel,item)*60;examCorrect=0;examTotal=0;show('exam-play-screen');startExamTimer();nextExamQuestion();
+}
+function startExamTimer(){clearInterval(examTimer);updateExamTimer();examTimer=setInterval(()=>{examSeconds--;updateExamTimer();if(examSeconds<=0){clearInterval(examTimer);finishExam()}},1000)}
+function updateExamTimer(){const m=Math.floor(examSeconds/60),s=examSeconds%60;$('examTimer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function nextExamQuestion(){examQuestion=makeExamQuestion(examItem,examLevel,examCalc);const mins=examPracticeMinutes(examCalc,examLevel,examItem);$('examTitle').textContent=examCalc+' '+examLevel+' ／ '+examItemName(examCalc,examItem)+'（'+mins+'分練習）';$('examCount').textContent='正解 '+examCorrect+'問 ／ 回答 '+examTotal+'問';$('examQuestion').textContent=examQuestion.display;$('examInput').value='';$('examInput').focus()}
+function submitExamAnswer(){if(!examQuestion)return;const val=$('examInput').value;if(val==='')return alert('答えを入力してください。');examTotal++;if(Number(val)===examQuestion.answer)examCorrect++;nextExamQuestion()}
+function finishExam(){clearInterval(examTimer);const rate=examTotal?Math.round(examCorrect/examTotal*100):0;$('examResultTitle').textContent=examCalc+' '+examLevel+' ／ '+examItem;$('examScore').textContent=examCorrect+'問 正解';$('examResultDetail').innerHTML='<p>回答数：'+examTotal+'問</p><p>正答率：'+rate+'%</p><p>'+examPracticeMinutes(examCalc,examLevel,examItem)+'分間で、'+examItemName(examCalc,examItem)+'を集中して練習しました。</p>';
+ addHistory(examCalc+' '+examLevel+' '+examItemName(examCalc,examItem)+' 検定練習',examCorrect);unlockGame();show('exam-result-screen')}
+
+/* ごほうびゲーム：神経衰弱 */
+let memoryLevel=1,memoryCards=[],memoryOpen=[],memoryLock=false,memoryMatched=0,memoryMoves=0;
+const MEMORY_LEVELS={
+ 1:{name:'レベル1',pairs:5,max:5,desc:'1～5の数字と、そろばんの玉の組み合わせ'},
+ 2:{name:'レベル2',pairs:10,max:10,desc:'1～10の数字と、そろばんの玉の組み合わせ'},
+ 3:{name:'レベル3',pairs:15,max:15,desc:'1～15の数字と、そろばんの玉の組み合わせ'},
+ 4:{name:'レベル4',pairs:20,max:20,desc:'1～20の数字と、そろばんの玉の組み合わせ'}
+};
+function unlockGame(){
+ if(!currentStudent)return;
+ localStorage.setItem('sorobanGameUnlocked_'+currentStudent.id,'1');
+}
+function isGameUnlocked(){return !!(currentStudent&&localStorage.getItem('sorobanGameUnlocked_'+currentStudent.id)==='1')}
+function showGameRewardButton(containerId){
+ const el=$(containerId);
+ if(!el)return;
+ if(isGameUnlocked()){
+  if(!document.getElementById('rewardGameBtn')){
+   const b=document.createElement('button');b.id='rewardGameBtn';b.className='btn purple';b.textContent='🎮 ごほうびゲームで遊ぶ';b.onclick=showGameLevels;el.appendChild(b);
+  }
+ }
+}
+function showGameLevels(){
+ unlockGame();
+ const box=$('memoryLevelList');
+ box.innerHTML='';
+ Object.entries(MEMORY_LEVELS).forEach(([id,v])=>{
+  const b=document.createElement('button');
+  b.className='btn purple';
+  b.innerHTML='🎮 '+v.name+'<br><small>'+v.desc+'</small>';
+  b.onclick=()=>startMemoryGame(Number(id));
+  box.appendChild(b);
+ });
+ show('game-menu-screen');
+}
+function startMemoryGame(level){
+ memoryLevel=level;memoryOpen=[];memoryLock=false;memoryMatched=0;memoryMoves=0;
+ const cfg=MEMORY_LEVELS[level];
+ memoryCards=[];
+ for(let n=1;n<=cfg.pairs;n++){
+  memoryCards.push({value:n,type:'number',id:n+'n'});
+  memoryCards.push({value:n,type:'soroban',id:n+'s'});
+ }
+ memoryCards.sort(()=>Math.random()-.5);
+ $('gameHeading').textContent='神経衰弱 '+cfg.name;
+ $('memoryLevelDescription').textContent=cfg.desc;
+ renderMemoryBoard('memoryBoard');
+ show('game-level-screen');
+}
+function sorobanDigitHTML(d){
+ let html='<div class="memory-digit"><div class="memory-bar"></div>';
+ const five=d>=5;
+ if(five)html+='<div class="bead top"></div>';
+ const ones=d%5;
+ for(let i=1;i<=ones;i++)html+='<div class="bead bottom b'+i+'"></div>';
+ return html+'</div>';
+}
+function sorobanNumberHTML(n){
+ return '<div class="memory-soroban">'+String(n).split('').map(d=>sorobanDigitHTML(Number(d))).join('')+'</div>';
+}
+function memoryCardHTML(card,index){
+ const open=memoryOpen.includes(index)||card.matched;
+ let content='？';
+ if(open)content=card.type==='number'?'<span class="memory-number">'+card.value+'</span>':sorobanNumberHTML(card.value);
+ return '<button class="memory-card '+(open?'open ':'')+(card.matched?'matched':'')+'" onclick="memoryClick('+index+')">'+content+'</button>';
+}
+function renderMemoryBoard(){
+ const board=$('memoryBoard');
+ board.innerHTML=memoryCards.map((c,i)=>memoryCardHTML(c,i)).join('');
+ board.className='memory-board';
+}
+function memoryClick(index){
+ if(memoryLock)return;
+ const card=memoryCards[index];
+ if(card.matched||memoryOpen.includes(index))return;
+ memoryOpen.push(index);renderMemoryBoard();
+ if(memoryOpen.length<2)return;
+ memoryMoves++;memoryLock=true;
+ const[a,b]=memoryOpen;
+ const same=memoryCards[a].value===memoryCards[b].value && memoryCards[a].type!==memoryCards[b].type;
+ setTimeout(()=>{
+  if(same){memoryCards[a].matched=true;memoryCards[b].matched=true;memoryMatched++;}
+  memoryOpen=[];memoryLock=false;renderMemoryBoard();
+  if(memoryMatched===MEMORY_LEVELS[memoryLevel].pairs){
+   $('gameResult').innerHTML='<div>レベル'+memoryLevel+' クリア！</div><small>'+memoryMoves+'回でクリアしました。</small>';
+   addHistory('ごほうびゲーム 神経衰弱 レベル'+memoryLevel,memoryMatched);
+   show('game-result-screen');
+  }
+ },same?350:750);
+}
+
+/* 生徒の学習記録・先生とのやりとり */
+function getStudyLogs(){return JSON.parse(localStorage.getItem('sorobanStudyLogs')||'[]')}
+function saveStudyLogs(a){localStorage.setItem('sorobanStudyLogs',JSON.stringify(a))}
+function getMessages(){return JSON.parse(localStorage.getItem('sorobanMessages')||'[]')}
+function saveMessages(a){localStorage.setItem('sorobanMessages',JSON.stringify(a))}
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dateLabel(ds){const d=new Date(ds+'T00:00:00');return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日（'+DAY[d.getDay()]+'）'}
+function addStudyLog(){
+ if(!currentStudent)return;
+ const date=todayISO();
+ const text=$('studyText').value.trim();
+ if(!text)return alert('取り組んだことを書いてください。');
+ const a=getStudyLogs();
+ a.push({id:Date.now().toString(),studentId:currentStudent.id,date,text,book:text,start:0,end:0,note:'',createdAt:new Date().toISOString()});
+ saveStudyLogs(a);
+ $('studyText').value='';
+ showHomework();
+}
+function showMessages(){
+ if(!currentStudent)return;
+ const a=getMessages().filter(x=>x.studentId===currentStudent.id).sort((x,y)=>x.createdAt.localeCompare(y.createdAt));
+ $('messageList').innerHTML=a.length?a.map(x=>{
+  const mine=x.from==='student';
+  return '<div class="chat-row '+(mine?'mine':'theirs')+'"><div class="chat-bubble">'+(!mine?'<div class="chat-name">👩‍🏫 先生</div>':'')+(x.type&&mine?'<div class="chat-type">'+escapeHtml(x.type)+'</div>':'')+'<div>'+escapeHtml(x.text)+'</div>'+(x.page?'<div class="chat-page">📖 '+escapeHtml(x.page)+'</div>':'')+'<small>'+new Date(x.createdAt).toLocaleString('ja-JP')+'</small></div></div>';
+ }).join(''):'<div class="chat-empty">先生に質問してみよう💬</div>';
+ const all=getMessages();all.forEach(x=>{if(x.studentId===currentStudent.id&&x.from==='teacher')x.read=true});saveMessages(all);show('messages-screen');
+}
+function sendStudentMessage(){
+ if(!currentStudent)return;const text=$('messageText').value.trim();if(!text)return alert('質問を入力してください。');
+ const a=getMessages();a.push({id:Date.now().toString(),studentId:currentStudent.id,from:'student',type:$('messageType').value,page:$('messagePage').value.trim(),text,createdAt:new Date().toISOString(),read:false});saveMessages(a);$('messageText').value='';$('messagePage').value='';showMessages();
+}
+function teacherMessages(){
+ const ss=getStudents(),all=getMessages();
+ const groups=ss.map(s=>({s,msgs:all.filter(x=>x.studentId===s.id).sort((a,b)=>a.createdAt.localeCompare(b.createdAt))})).filter(g=>g.msgs.length);
+ $('teacherMessageList').innerHTML=groups.length?groups.map(g=>{
+  const last=g.msgs[g.msgs.length-1];
+  const bubbles=g.msgs.map(x=>'<div class="teacher-chat-row '+(x.from==='teacher'?'mine':'theirs')+'"><div class="chat-bubble">'+(x.from==='student'?'<div class="chat-name">👧 '+escapeHtml(g.s.name)+'</div>':'<div class="chat-name">👩‍🏫 先生</div>')+'<div>'+escapeHtml(x.text)+'</div>'+(x.page?'<div class="chat-page">📖 '+escapeHtml(x.page)+'</div>':'')+'<small>'+new Date(x.createdAt).toLocaleString('ja-JP')+'</small>'+(x.from==='student'?'<div class="replyBox"><textarea id="reply_'+x.id+'" rows="2" placeholder="返信を書く"></textarea><button class="btn blue" onclick="replyMessage(\''+x.id+'\')">返信する</button></div>':'')+'</div></div>').join('');
+  return '<div class="teacher-chat-group"><div class="teacher-chat-header"><b>👧 '+escapeHtml(g.s.name)+'</b><span>'+g.msgs.length+'件</span></div>'+bubbles+'</div>';
+ }).join(''):'<p>まだメッセージはありません。</p>';
+ show('teacher-messages-screen');
+}
+function replyMessage(id){const el=$('reply_'+id),text=el.value.trim();if(!text)return alert('返信を入力してください。');const a=getMessages(),q=a.find(x=>x.id===id);if(!q)return; a.push({id:Date.now().toString(),studentId:q.studentId,from:'teacher',type:'先生からの返信',text,createdAt:new Date().toISOString(),read:false});saveMessages(a);teacherMessages();}
+
+/* 宿題・自分で記録 */
+function showHomework(){
+ if(!currentStudent)return;
+ const today=todayISO();
+ $('todayDate').textContent=dateLabel(today);
+ $('studyDate').value=today;
+ const logs=getStudyLogs().filter(x=>x.studentId===currentStudent.id);
+ const hw=getHW().filter(x=>x.studentId===currentStudent.id);
+ const items=[];
+ logs.forEach(x=>items.push({date:x.date,kind:'自分で記録',book:x.text||x.book,start:x.start,end:x.end,note:x.note,id:x.id,self:true}));
+ hw.forEach(x=>items.push({date:x.date,kind:'先生から',book:x.book,start:x.start,end:x.end,note:x.note,id:x.id,teacher:true,done:x.done}));
+ items.sort((a,b)=>b.date.localeCompare(a.date));
+ $('homeworkList').innerHTML=items.length?items.map(x=>{
+  const extra=x.teacher?'<br><button class="hw-check-btn '+(x.done?'checked':'')+'" onclick="completeHW(\''+x.id+'\')">'+(x.done?'☑️ やった！':'☐ 宿題をやった！')+'</button>':'';
+  return '<div class="hwItem '+(x.teacher?(x.done?'done':'blue'):'')+'"><b>'+dateLabel(x.date)+'</b>　<span class="messageBadge">'+x.kind+'</span><br>📖 '+escapeHtml(x.book)+'　<b>'+x.start+'～'+x.end+'ページ</b>'+(x.note?'<br>✏️ '+escapeHtml(x.note):'')+extra+'</div>';
+ }).join(''):'<p>まだ記録がありません。上の「今日やったことを記録」から入力できます。</p>';
+ const n=new Set(logs.map(x=>x.date)).size;
+ $('gardenHome').textContent=gardenEmoji();
+ $('gardenText').textContent=n+'日分の学習を記録！';
+ $('medals').innerHTML=medalHTML();
+ updateMenuStats();
+ show('homework-screen');
+}
+function completeHW(id){
+ let a=getHW(),x=a.find(h=>h.id===id);if(!x||x.done)return;
+ x.done=true;x.completedAt=new Date().toISOString();saveHW(a);
+ showHomework();
+}
+function medalHTML(){
+ const dates=new Set(getStudyLogs().filter(x=>x.studentId===currentStudent.id).map(x=>x.date));const n=dates.size;let m='';
+ if(n>=30)m+='<span class="medal">🥉</span> 1か月';if(n>=60)m+='　<span class="medal">🥈</span> 2か月';if(n>=180)m+='　<span class="medal">🥇</span> 半年';if(n>=365)m+='　<span class="medal">🏆</span> 1年';return m||'まずは学習した日を記録してみよう！';
+}
+
+/* 履歴 */
+function addHistory(name,score){
+ if(!currentStudent)return;
+ let a=getHistory();
+ a.unshift({studentId:currentStudent.id,date:new Date().toISOString(),name,score});
+ saveHistory(a.slice(0,200));
+}
+function showHistory(){
+ const h=getHistory().filter(x=>x.studentId===currentStudent.id);
+ $('historyList').innerHTML=h.length?h.map(x=>'<div class="historyItem"><b>'+escapeHtml(x.name)+'</b><br><small>'+new Date(x.date).toLocaleString('ja-JP')+'</small><br>結果：'+x.score+'</div>').join(''):'<p>まだ学習記録がありません。</p>';
+ show('history-screen');
+}
+
+/* 先生 */
+function teacherStudents(){
+ const a=getStudents();
+ $('studentList').innerHTML=a.length?a.map((s,i)=>{
+  const hw=getHW().filter(x=>x.studentId===s.id),done=hw.filter(x=>x.done).length;
+  const logs=getStudyLogs().filter(x=>x.studentId===s.id),days=new Set(logs.map(x=>x.date)).size;
+  const msgs=getMessages().filter(x=>x.studentId===s.id),unread=msgs.filter(x=>x.from==='student'&&!x.read).length;
+  const avatar=['🐰','🐱','🐶','🐼','🐨'][i%5];
+  return '<div class="student-manage-card"><div class="student-manage-top"><span class="student-big-avatar">'+avatar+'</span><div><h3>'+escapeHtml(s.name)+'</h3><small>登録日 '+new Date(s.created).toLocaleDateString('ja-JP')+'</small></div></div><div class="student-summary"><div><b>'+done+'/'+hw.length+'</b><small>宿題完了</small></div><div><b>'+days+'</b><small>学習日数</small></div><div><b>'+unread+'</b><small>未読メッセージ</small></div></div><div class="student-actions"><button onclick="teacherHomeworkFor(\''+s.id+'\')">📚 宿題を出す</button><button onclick="teacherMessagesFor(\''+s.id+'\')">💬 チャット</button><button class="danger" onclick="deleteStudent(\''+s.id+'\')">削除</button></div></div>';
+ }).join(''):'<p>まだ生徒がいません。</p>';
+ show('teacher-students-screen');
+}
+function teacherHomeworkFor(id){teacherHomework();$('hwStudent').value=id;}
+function teacherMessagesFor(id){teacherMessages();}
+function addStudent(){
+ const name=$('newStudentName').value.trim();if(!name)return alert('名前を入力してください。');
+ let a=getStudents();
+ if(a.length>=5)return alert('このアプリには5人まで登録できます。');
+ if(a.some(s=>s.name===name))return alert('その名前はすでに登録されています。');
+ let s={id:Date.now().toString(),name,created:new Date().toISOString()};
+ a.push(s);saveStudents(a);$('newStudentName').value='';
+ alert(name+'さんを登録しました。');
+ teacherStudents();
+}
+function deleteStudent(id){
+ if(!confirm('この生徒を削除しますか？'))return;
+ saveStudents(getStudents().filter(x=>x.id!==id));
+ saveHW(getHW().filter(x=>x.studentId!==id));
+ teacherStudents();
+}
+function teacherHomework(){
+ const ss=getStudents();
+ $('hwStudent').innerHTML=ss.map(s=>'<option value="'+s.id+'">'+escapeHtml(s.name)+'</option>').join('');
+ $('hwDate').value=todayISO();
+ const a=getHW().slice().sort((x,y)=>y.date.localeCompare(x.date));
+ $('teacherHwList').innerHTML=a.length?a.map(x=>{
+  const s=ss.find(v=>v.id===x.studentId);const done=x.done;
+  return '<div class="teacher-hw-card '+(done?'is-done':'')+'"><div class="teacher-hw-top"><b>👧 '+escapeHtml(s?s.name:'不明')+'</b><span>'+dateLabel(x.date)+'</span></div><h3>'+escapeHtml(x.book)+'</h3><div class="teacher-hw-pages">📖 '+x.start+'～'+x.end+'ページ</div>'+(x.note?'<p>💬 '+escapeHtml(x.note)+'</p>':'')+'<div class="teacher-hw-status">'+(done?'☑️ 生徒が完了しました':'⬜ まだ完了していません')+'</div></div>';
+ }).join(''):'<p>宿題はまだありません。</p>';
+ show('teacher-homework-screen');
+}
+function addHomework(){
+ const sid=$('hwStudent').value,date=$('hwDate').value,book=$('hwBook').value.trim();
+ const start=+$('hwStart').value,end=+$('hwEnd').value,note=$('hwNote').value.trim();
+ if(!sid||!date||!book||!start||!end)return alert('生徒・日付・教材・ページを入力してください。');
+ let a=getHW();
+ a.push({id:Date.now().toString(),studentId:sid,date,book,start,end,note,done:false});
+ saveHW(a);$('hwBook').value='';$('hwStart').value='';$('hwEnd').value='';$('hwNote').value='';
+ teacherHomework();
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+/* 初期データ */
+(function init(){
+ if(!localStorage.getItem('sorobanAppInitialized')){
+  localStorage.setItem('sorobanAppInitialized','1');
+ }
+ renderStartStudents();
+})();
+</script>
+
+<script type="module">
+/* そろばん育成アプリ Firebase 接続版 */
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, writeBatch } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js';
+
+const firebaseConfig={apiKey:'AIzaSyBixEoluuY--QjANQR9nRZSzJGlu7E_cig',authDomain:'soloban-9fc6f.firebaseapp.com',projectId:'soloban-9fc6f',storageBucket:'soloban-9fc6f.firebasestorage.app',messagingSenderId:'918735173497',appId:'1:918735173497:web:46dbd706f05775abab21a8',measurementId:'G-F3EY5N6EKN'};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const COLLECTIONS={students:'students',profiles:'studentProfiles',homework:'homework',studyLogs:'studyLogs',messages:'messages',history:'history'};
+function randomToken(){const a=new Uint8Array(18);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('')}
+function now(){return new Date().toISOString()}
+function isTeacher(){return !!auth.currentUser&&!auth.currentUser.isAnonymous}
+function studentKey(){return localStorage.getItem('sorobanStudentId')||''}
+async function signStudent(){if(auth.currentUser?.isAnonymous)return auth.currentUser;return (await signInAnonymously(auth)).user}
+async function studentAnonymousLogin(){return signStudent()}
+async function teacherLogin(email,password){if(!email||!password)throw new Error('メールアドレスとパスワードを入力してください。');const r=await signInWithEmailAndPassword(auth,email,password);if(r.user.isAnonymous)throw new Error('先生用アカウントでログインしてください。');return r.user}
+
+async function createStudent(realName,nickname){
+ const user=await signStudent(); realName=String(realName||'').trim(); nickname=String(nickname||'').trim();
+ if(!realName)throw new Error('本名を入力してください。'); if(!nickname)throw new Error('ニックネームを入力してください。');
+ const students=await getDocs(collection(db,COLLECTIONS.students));
+ if(students.size>=5)throw new Error('このアプリには5人まで登録できます。');
+ const duplicate=students.docs.some(d=>(d.data().nickname||'').trim()===nickname);
+ if(duplicate)throw new Error('そのニックネームはすでに登録されています。');
+ const id=randomToken(),created=now();
+ const data={id,nickname,name:nickname,realName,uid:user.uid,created,exp:0};
+ await setDoc(doc(db,COLLECTIONS.students,id),data);
+ await setDoc(doc(db,COLLECTIONS.profiles,id),{nickname,uid:user.uid,updatedAt:created});
+ localStorage.setItem('sorobanStudentId',id);
+ return data;
+}
+async function getStudent(studentId){const s=await getDoc(doc(db,COLLECTIONS.students,studentId));return s.exists()?{...s.data(),id:s.id}:null}
+async function getStudentData(studentId){const out={};for(const type of ['homework','studyLogs','messages','history']){const q=query(collection(db,COLLECTIONS[type]),where('studentId','==',studentId));const snaps=await getDocs(q);out[type]=snaps.docs.map(d=>({...d.data(),id:d.id}))}return out}
+async function saveCollection(type,items){if(!COLLECTIONS[type]||!auth.currentUser)return;const user=auth.currentUser,batch=writeBatch(db),c=collection(db,COLLECTIONS[type]);for(const item of items||[]){if(!item?.id)continue;if(type!=='students'&&type!=='profiles'&&item.studentId&&user.isAnonymous&&item.studentId!==studentKey())continue;batch.set(doc(c,String(item.id)),{...item,updatedAt:now()},{merge:true})}await batch.commit()}
+async function deleteCollectionItem(type,id){if(COLLECTIONS[type])await deleteDoc(doc(db,COLLECTIONS[type],String(id)))}
+async function teacherLoadAll(){if(!isTeacher())throw new Error('先生としてログインしてください。');const out={};for(const type of ['students','homework','studyLogs','messages','history']){const snaps=await getDocs(collection(db,COLLECTIONS[type]));out[type]=snaps.docs.map(d=>({...d.data(),id:d.id}))}return out}
+async function teacherDeleteStudent(studentId){if(!isTeacher())throw new Error('先生としてログインしてください。');await deleteDoc(doc(db,COLLECTIONS.students,studentId));await deleteDoc(doc(db,COLLECTIONS.profiles,studentId));for(const type of ['homework','studyLogs','messages','history']){const q=query(collection(db,COLLECTIONS[type]),where('studentId','==',studentId));const snaps=await getDocs(q),batch=writeBatch(db);snaps.docs.forEach(d=>batch.delete(d.ref));await batch.commit()}}
+onAuthStateChanged(auth,user=>window.dispatchEvent(new CustomEvent('soroban-auth',{detail:{user,isTeacher:!!user&&!user.isAnonymous}})));
+window.SorobanCloud={auth,db,isTeacher,studentAnonymousLogin,studentRegister:createStudent,createStudent,teacherLogin,getStudent,getStudentData,saveCollection,deleteCollectionItem,teacherLoadAll,teacherDeleteStudent,signOut};
+
+
+
+
+window.addEventListener('soroban-auth', e=>{
+  if(e.detail?.user) window.sorobanFirebaseUser=e.detail.user;
+});
+
+(async function cloudBootstrap(){
+  const C=window.SorobanCloud;
+  if(!C) return;
+  const qs=new URLSearchParams(location.search);
+  const invite=qs.get('invite');
+  try{
+    if(invite){
+      const s=await C.redeemInvite(invite);
+      let local=getStudents();
+      local=local.filter(x=>x.id!==s.id);
+      local.push({id:s.id,nickname:s.nickname||s.name,name:s.nickname||s.name,realName:'',created:s.created||new Date().toISOString(),exp:s.exp||0});
+      localStorage.setItem('sorobanStudents',JSON.stringify(local));
+      const d=await C.getStudentData(s.id);
+      for(const type of ['homework','studyLogs','messages','history']) localStorage.setItem('soroban'+({homework:'Homework',studyLogs:'StudyLogs',messages:'Messages',history:'History'}[type]),JSON.stringify(d[type]||[]));
+      history.replaceState({},'',location.pathname);
+      renderStartStudents();
+      $('inviteNotice').innerHTML='登録できました！<br><b>'+escapeHtml(s.nickname||s.name)+'さん</b>で使えます。';
+      studentLoginById(s.id);
+      return;
+    }
+    const sid=localStorage.getItem('sorobanStudentId');
+    if(sid){
+      const user=await C.studentAnonymousLogin();
+      const s=await C.getStudent(sid);
+      if(s && s.uid===user.uid){
+        let local=getStudents().filter(x=>x.id!==sid);
+        local.push({id:s.id,nickname:s.nickname||s.name,name:s.nickname||s.name,realName:'',created:s.created||new Date().toISOString(),exp:s.exp||0});
+        localStorage.setItem('sorobanStudents',JSON.stringify(local));
+        const d=await C.getStudentData(sid);
+        for(const type of ['homework','studyLogs','messages','history']) localStorage.setItem('soroban'+({homework:'Homework',studyLogs:'StudyLogs',messages:'Messages',history:'History'}[type]),JSON.stringify(d[type]||[]));
+      }else localStorage.removeItem('sorobanStudentId');
+    }
+    renderStartStudents();
+  }catch(err){
+    console.error(err);
+    const n=$('inviteNotice'); if(n) n.innerHTML='招待リンクの登録でエラーがありました。<br>'+escapeHtml(err.message||String(err));
+  }
+})();
+
+// 既存の保存処理をクラウドにも保存する（既存機能はそのまま）
+function cloudWrapSave(name,type){
+  const old=window[name];
+  if(typeof old!=='function') return;
+  window[name]=function(a){ old(a); const C=window.SorobanCloud; if(C?.auth?.currentUser?.isAnonymous) C.saveCollection(type,a).catch(console.error); };
+}
+cloudWrapSave('saveHW','homework');
+cloudWrapSave('saveStudyLogs','studyLogs');
+cloudWrapSave('saveMessages','messages');
+cloudWrapSave('saveHistory','history');
+
+const oldLoginById=window.studentLoginById;
+window.studentLoginById=async function(id){
+  try{
+    const C=window.SorobanCloud;
+    if(C){
+      await C.studentAnonymousLogin();
+      const s=await C.getStudent(id);
+      if(s && (!s.uid || s.uid===C.auth.currentUser.uid)){
+        if(s.uid!==C.auth.currentUser.uid && !s.uid){
+          // 招待経由で登録済みでない場合は、ローカルから勝手に紐付けない
+        }
+        const d=await C.getStudentData(id);
+        for(const type of ['homework','studyLogs','messages','history']) localStorage.setItem('soroban'+({homework:'Homework',studyLogs:'StudyLogs',messages:'Messages',history:'History'}[type]),JSON.stringify(d[type]||[]));
+        localStorage.setItem('sorobanStudentId',id);
+        let local=getStudents().filter(x=>x.id!==id);
+        local.push({id:s.id,nickname:s.nickname||s.name,name:s.nickname||s.name,realName:'',created:s.created||new Date().toISOString(),exp:s.exp||0});
+        localStorage.setItem('sorobanStudents',JSON.stringify(local));
+      }
+    }
+  }catch(err){ alert(err.message||String(err)); return; }
+  return oldLoginById(id);
+};
+
+const oldLogout=window.logout;
+window.logout=function(){ localStorage.removeItem('sorobanStudentId'); return oldLogout(); };
+</script>
+
+<script type="module">
+
+
+window.addEventListener('soroban-auth', e=>{
+  if(e.detail?.user) window.sorobanFirebaseUser=e.detail.user;
+});
+
+async function registerStudentAccount(){
+  const realName = $('studentRealName')?.value.trim() || '';
+  const nickname = $('studentNickname')?.value.trim() || '';
+  if(!realName) return alert('本名を入力してください。');
+  if(!nickname) return alert('ニックネームを入力してください。');
+
+  const C = window.SorobanCloud;
+  if(!C) return alert('接続の準備ができていません。少し待ってからもう一度試してください。');
+
+  try{
+    const s = await C.createStudent(realName, nickname);
+    let a = getStudents().filter(x=>x.id!==s.id);
+    a.push({
+      id:s.id,
+      name:s.nickname,
+      nickname:s.nickname,
+      realName:'',
+      created:s.created || new Date().toISOString(),
+      exp:0
+    });
+    saveStudents(a);
+    localStorage.setItem('sorobanStudentId', s.id);
+    const d = await C.getStudentData(s.id);
+    for(const type of ['homework','studyLogs','messages','history']){
+      localStorage.setItem('soroban'+({homework:'Homework',studyLogs:'StudyLogs',messages:'Messages',history:'History'}[type]), JSON.stringify(d[type]||[]));
+    }
+    $('studentRealName').value='';
+    $('studentNickname').value='';
+    renderStartStudents();
+    $('inviteNotice').innerHTML='登録できました！<br><b>'+escapeHtml(s.nickname)+'さん</b>で使えます。';
+    await studentLoginById(s.id);
+  }catch(err){
+    console.error(err);
+    alert(err.message || String(err));
+  }
+}
+window.registerStudentAccount = registerStudentAccount;
+
+// Cloud bootstrap: restore the current student on this device.
+(async function cloudBootstrap(){
+  const C=window.SorobanCloud;
+  if(!C) return;
+  try{
+    const sid=localStorage.getItem('sorobanStudentId');
+    if(sid){
+      const user=await C.studentAnonymousLogin();
+      const s=await C.getStudent(sid);
+      if(s && s.uid===user.uid){
+        let local=getStudents().filter(x=>x.id!==sid);
+        local.push({
+          id:s.id,
+          nickname:s.nickname||s.name,
+          name:s.nickname||s.name,
+          realName:'',
+          created:s.created||new Date().toISOString(),
+          exp:s.exp||0
+        });
+        localStorage.setItem('sorobanStudents',JSON.stringify(local));
+        const d=await C.getStudentData(sid);
+        for(const type of ['homework','studyLogs','messages','history']){
+          localStorage.setItem('soroban'+({homework:'Homework',studyLogs:'StudyLogs',messages:'Messages',history:'History'}[type]),JSON.stringify(d[type]||[]));
+        }
+      }else{
+        localStorage.removeItem('sorobanStudentId');
+      }
+    }
+    renderStartStudents();
+  }catch(err){
+    console.error(err);
+    renderStartStudents();
+  }
+})();
+
+// Existing save functions continue to save locally and also to Firebase.
+function cloudWrapSave(name,type){
+  const old=window[name];
+  if(typeof old!=='function') return;
+  window[name]=function(a){
+    old(a);
+    const C=window.SorobanCloud;
+    if(C?.auth?.currentUser?.isAnonymous) C.saveCollection(type,a).catch(console.error);
+  };
+}
+cloudWrapSave('saveHW','homework');
+cloudWrapSave('saveStudyLogs','studyLogs');
+cloudWrapSave('saveMessages','messages');
+cloudWrapSave('saveHistory','history');
+
+const oldLoginById=window.studentLoginById;
+window.studentLoginById=async function(id){
+  try{
+    const C=window.SorobanCloud;
+    if(C){
+      await C.studentAnonymousLogin();
+      const s=await C.getStudent(id);
+      if(!s || s.uid!==C.auth.currentUser.uid){
+        throw new Error('この生徒の登録情報を確認できません。');
+      }
+      const d=await C.getStudentData(id);
+      for(const type of ['homework','studyLogs','messages','history']){
+        localStorage.setItem('soroban'+({homework:'Homework',studyLogs:'StudyLogs',messages:'Messages',history:'History'}[type]),JSON.stringify(d[type]||[]));
+      }
+      localStorage.setItem('sorobanStudentId',id);
+      let local=getStudents().filter(x=>x.id!==id);
+      local.push({
+        id:s.id,
+        nickname:s.nickname||s.name,
+        name:s.nickname||s.name,
+        realName:'',
+        created:s.created||new Date().toISOString(),
+        exp:s.exp||0
+      });
+      localStorage.setItem('sorobanStudents',JSON.stringify(local));
+    }
+  }catch(err){
+    alert(err.message||String(err));
+    return;
+  }
+  return oldLoginById(id);
+};
+
+const oldLogout=window.logout;
+window.logout=function(){
+  localStorage.removeItem('sorobanStudentId');
+  return oldLogout();
+};
+</script>
+
+</body>
+</html>
